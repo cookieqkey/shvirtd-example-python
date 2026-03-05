@@ -1,0 +1,57 @@
+include:
+  - proxy.yaml
+
+services:
+  reverse-proxy:
+    ports:
+      - "127.0.0.1:8090:8080"
+  ingress-proxy:
+    network_mode: bridge 
+  web:
+    image: cr.yandex/crpfg8b1go6qai6dfpp8/shvirtd-example-python:cloud-latest
+    container_name: web
+    restart: on-failure
+
+    networks:
+      backend:
+        ipv4_address: 172.20.0.5
+
+    environment:
+      DB_HOST: db
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_NAME: ${MYSQL_DATABASE}
+
+    depends_on:
+      - db
+
+
+  db:
+    image: mysql:8
+    container_name: db
+    restart: on-failure
+
+    networks:
+      backend:
+        ipv4_address: 172.20.0.10
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+
+volumes:
+  mysql_data:
