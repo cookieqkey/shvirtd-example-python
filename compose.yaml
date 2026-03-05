@@ -8,7 +8,9 @@ services:
   ingress-proxy:
     network_mode: bridge 
   web:
-    image: cr.yandex/crpfg8b1go6qai6dfpp8/shvirtd-example-python:cloud-latest
+    build:
+      context: .
+      dockerfile: Dockerfile.python
     container_name: web
     restart: on-failure
 
