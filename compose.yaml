@@ -4,7 +4,7 @@ include:
 services:
   reverse-proxy:
     ports:
-      - "127.0.0.1:8090:8080"
+      - "8090:8080"
   ingress-proxy:
     network_mode: bridge 
   web:
