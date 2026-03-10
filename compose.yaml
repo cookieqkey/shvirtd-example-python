@@ -6,7 +6,8 @@ services:
     ports:
       - "8090:8080"
   ingress-proxy:
-    network_mode: bridge 
+    depends_on:
+      - reverse-proxy
   web:
     build:
       context: .
